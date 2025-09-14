@@ -15,10 +15,9 @@ Rectangle {
         }
 
         onLoginFailed: {
-            denied.play()
         }
     }
-
+// Background
     AnimatedImage {
         width: parent.width
         height: parent.height
@@ -26,21 +25,17 @@ Rectangle {
         source: "bgN5.gif"
     }
 
+// Center logo and login
     ColumnLayout {
         width: parent.width
         height: parent.height
         AnimatedImage{
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 2
-            width: 192
-            height: 192
-            source: "WiredLogIn.gif"
-        }
-        Image{
-            Layout.alignment: Qt.AlignCenter
-            Layout.bottomMargin: 20
-            height: 50
-            source: "whoIsUser.gif"
+            width: (parent.width / 3)
+            height: (parent.width / 3)
+            // source: "WiredLogIn.gif"
+            source: "test_512p.jpg"
         }
         Qqc.Label {
             Layout.alignment: Qt.AlignCenter
@@ -95,26 +90,27 @@ Rectangle {
                 }
             }
         }
-        ColumnLayout {
+        Qqc.Button {
             Layout.alignment: Qt.AlignCenter
-            Layout.topMargin: 4
-            Layout.bottomMargin: 50
-            width: 200
-            Rectangle {
-                anchors.fill: parent
+            text:"Ｌｏｇｉｎ"
+            font.pixelSize: 20
+            background: Rectangle {
+                implicitWidth: 200
+                implicitHeight: 40
                 color: "#d2738a"
+                radius: 4
             }
-            Qqc.Label {
-                Layout.alignment: Qt.AlignCenter
-                text: "Ｌｏｇｉｎ"
-                color: "#c1b492"
-                font.pixelSize: 20
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: sddm.login(username.text, password.text, session.index)
-            }
+            // contentItem: Text {
+            //     text: control.text
+            //     font.pixelSize: control.font.pixelSize
+            //     color: "#c1b492"
+            //     horizontalAlignment: Text.AlignHCenter
+            //     verticalAlignment: Text.AlignVCenter
+            //     anchors.fill: parent
+            // }
+            onClicked: sddm.login(username.text, password.text, session.index)
         }
+
     }
     AnimatedImage {
         id: shutdownBtn
