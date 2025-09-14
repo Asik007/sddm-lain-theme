@@ -71,7 +71,7 @@ Rectangle {
             spacing: 10
 
             Qqc.Button {
-                text: "<"
+                text: "◀"
                 width: 40
                 onClicked: {
                     if (usernameIndex > 0) {
@@ -92,7 +92,7 @@ Rectangle {
             }
 
             Qqc.Button {
-                text: ">"
+                text: "▶"
                 width: 40
                 onClicked: {
                     if (usernameIndex < userModel.count - 1) {
