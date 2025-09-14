@@ -7,16 +7,34 @@ Rectangle {
     color: "black"
     width   : Window.width
     height  : Window.height
+    focus: true
+
+    property int usernameIndex: 0
+
+    Keys.onLeftPressed: {
+        if (usernameIndex > 0) {
+            usernameIndex--
+        } else {
+            usernameIndex = userModel.count - 1
+        }
+    }
+    Keys.onRightPressed: {
+        if (usernameIndex < userModel.count - 1) {
+            usernameIndex++
+        } else {
+            usernameIndex = 0
+        }
+    }
 
     Connections {
         target: sddm
 
-        onLoginSucceeded: {
-        }
-
-        onLoginFailed: {
-            denied.play()
-        }
+//        onLoginSucceeded: {
+//        }
+//
+//        onLoginFailed: {
+//            denied.play()
+//        }
     }
 
     AnimatedImage {
@@ -48,22 +66,40 @@ Rectangle {
             color: "#c1b492"
             font.pixelSize: 16
         }
-        Qqc.TextField {
-            id: username
+        RowLayout {
             Layout.alignment: Qt.AlignCenter
-            text: userModel.lastUser
-            color: "#c1b492"
-            background: Rectangle {
-                color: "#000"
-                implicitWidth: 200
-                border.color: "#d2738a"
-                }
+            spacing: 10
 
-            KeyNavigation.backtab: shutdownBtn; KeyNavigation.tab: password
-            Keys.onPressed: {
-                if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    sddm.login(username.text, password.text, session.index)
-                    event.accepted = true
+            Qqc.Button {
+                text: "◀"
+                width: 40
+                onClicked: {
+                    if (usernameIndex > 0) {
+                        usernameIndex--
+                    } else {
+                        usernameIndex = userModel.count - 1
+                    }
+                }
+            }
+
+            Qqc.Label {
+                id: usernameLabel
+                width: 120
+                text: userModel.get(usernameIndex).name
+                color: "#c1b492"
+                font.pixelSize: 16
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Qqc.Button {
+                text: "▶"
+                width: 40
+                onClicked: {
+                    if (usernameIndex < userModel.count - 1) {
+                        usernameIndex++
+                    } else {
+                        usernameIndex = 0
+                    }
                 }
             }
         }
@@ -87,10 +123,10 @@ Rectangle {
                 border.color: "#d2738a"
             }
 
-            KeyNavigation.backtab: username; KeyNavigation.tab: session
+            KeyNavigation.backtab: session; KeyNavigation.tab: session
             Keys.onPressed: {
                 if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    sddm.login(username.text, password.text, session.index)
+                    sddm.login(userModel.get(usernameIndex).name, password.text, session.index)
                     event.accepted = true
                 }
             }
@@ -112,7 +148,7 @@ Rectangle {
             }
             MouseArea {
                 anchors.fill: parent
-                onClicked: sddm.login(username.text, password.text, session.index)
+                onClicked: sddm.login(userModel.get(usernameIndex).name, password.text, session.index)
             }
         }
     }
@@ -182,11 +218,7 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        if (username.text == "") {
-            username.focus = true
-        } else {
-            password.focus = true
-        }
+        password.focus = true
     }
 }
 
