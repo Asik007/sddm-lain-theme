@@ -148,10 +148,11 @@ Rectangle {
     }
     AnimatedImage {
         id: shutdownBtn
+        anchors.right: parent.right
         height: 80
         width: 80
         y: 10
-        x: Window.width - width - 10
+        x: -1 * Window.width
         source: "VisLain.gif"
         fillMode: Image.PreserveAspectFit
         MouseArea {
