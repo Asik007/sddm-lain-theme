@@ -8,14 +8,18 @@ Rectangle {
     width   : Window.width
     height  : Window.height
 
+
+    property int usernameIndex: userModel.lastIndex
+    property var usernameCurrent: userModel.data(userModel.index(usernameIndex, 0), 257);
+
     Connections {
         target: sddm
 
-        onLoginSucceeded: {
-        }
-
-        onLoginFailed: {
-        }
+        // onLoginSucceeded: {
+        // }
+        //
+        // onLoginFailed: {
+        // }
     }
 // Background
     AnimatedImage {
@@ -32,36 +36,66 @@ Rectangle {
         AnimatedImage{
             Layout.alignment: Qt.AlignCenter
             Layout.topMargin: 2
+            Layout.bottomMargin: 2
             width: (parent.width / 3)
             height: (parent.width / 3)
-            // source: "WiredLogIn.gif"
-            source: "test_512p.jpg"
+            source: "WiredLogIn.gif"
+            // source: "test_512p.jpg"
         }
-        Qqc.Label {
+        RowLayout {
             Layout.alignment: Qt.AlignCenter
-            text: "Ｕｓｅｒ ＩD:"
-            color: "#c1b492"
-            font.pixelSize: 16
-        }
-        Qqc.TextField {
-            id: username
-            Layout.alignment: Qt.AlignCenter
-            text: userModel.lastUser
-            color: "#c1b492"
-            background: Rectangle {
-                color: "#000"
-                implicitWidth: 200
-                border.color: "#d2738a"
-                }
+            spacing: 10
 
-            KeyNavigation.backtab: shutdownBtn; KeyNavigation.tab: password
-            Keys.onPressed: {
-                if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    sddm.login(username.text, password.text, session.index)
-                    event.accepted = true
+            Qqc.Button {
+                id:leftArrow
+                text: "<"
+                width: 40
+                enabled: usernameIndex > 0
+                onClicked: {
+                    if (usernameIndex > 0) {
+                        usernameIndex--
+                        // userModel.lastIndex = usernameIndex
+                    }
+                }
+            }
+
+            Qqc.Label {
+                id: usernameLabel
+                width: 120
+                text:usernameCurrent
+                color: "#c1b492"
+                font.pixelSize: 16
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Qqc.Button {
+                id:rightArrow
+                text: ">"
+                width: 40
+                enabled: usernameIndex < userModel.count - 1
+                onClicked: {
+                    if (usernameIndex < userModel.count - 1) {
+                        usernameIndex++
+                        // userModel.lastIndex = usernameIndex
+                    }
                 }
             }
         }
+
+        // Keyboard navigation for user selection
+        Keys.onLeftPressed: {
+            if (usernameIndex > 0) {
+                usernameIndex--
+                userModel.lastIndex = usernameIndex
+            }
+        }
+        Keys.onRightPressed: {
+            if (usernameIndex < userModel.count - 1) {
+                usernameIndex++
+                userModel.lastIndex = usernameIndex
+            }
+        }
+
 
 //         Parse date from userModel and fill the Username field
 
@@ -82,10 +116,10 @@ Rectangle {
                 border.color: "#d2738a"
             }
 
-            KeyNavigation.backtab: username; KeyNavigation.tab: session
-            Keys.onPressed: {
+            KeyNavigation.backtab: rightArrow; KeyNavigation.tab: session
+            Keys.onPressed: function (event) {
                 if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    sddm.login(username.text, password.text, session.index)
+                    sddm.login(usernameCurrent, password.text, session.index)
                     event.accepted = true
                 }
             }
@@ -172,17 +206,17 @@ Rectangle {
         focusColor: "#d2738a"
         hoverColor: "#d2738a"
         textColor: "#c1b492"
-        arrowIcon: "angle-down.png"
+        arrowIcon: Qt.resolvedUrl("angle-down.png")
         KeyNavigation.backtab: password
         KeyNavigation.tab: rebootBtn
     }
 
-    Component.onCompleted: {
-        if (username.text == "") {
-            username.focus = true
-        } else {
-            password.focus = true
-        }
-    }
+    // Component.onCompleted: {
+    //     if (username.text == "") {
+    //         username.focus = true
+    //     } else {
+    //         password.focus = true
+    //     }
+    // }
 }
 
